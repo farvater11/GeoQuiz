@@ -12,6 +12,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mPrevButton;
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[]{
@@ -34,6 +35,7 @@ public class QuizActivity extends AppCompatActivity {
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
         mNextButton = (Button) findViewById(R.id.next_button);
+        mPrevButton = (Button) findViewById(R.id.prev_button);
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
@@ -42,15 +44,13 @@ updateQuestion();
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), R.string.correct_toast,
-                        Toast.LENGTH_SHORT).show();
+                checkAnswer(true);
             }
         });
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),R.string.incorrect_toast,
-                        Toast.LENGTH_SHORT).show();
+                checkAnswer(false);
             }
         });
         mNextButton.setOnClickListener(new View.OnClickListener() {
@@ -60,9 +60,37 @@ updateQuestion();
                 updateQuestion();
             }
         });
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                if(mCurrentIndex < 0)
+                    mCurrentIndex = 0;
+                updateQuestion();
+            }
+        });
+        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex+1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
     }
     private void updateQuestion(){
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
     }
+    private void checkAnswer(boolean userPressedTrue){
+        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+        int messageResId = 0;
+        if(userPressedTrue == answerIsTrue){
+            messageResId = R.string.correct_toast;
+        }
+        else{
+            messageResId = R.string.incorrect_toast;
+        }
+        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+    }
+
 }
