@@ -104,7 +104,6 @@ public class QuizActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 checkAnswer(false);
             }
         });
@@ -120,8 +119,8 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
-                //if(mCurrentIndex < 0)
-                //    mCurrentIndex = 0;
+                if(mCurrentIndex < 0)
+                    mCurrentIndex = 0;
                 updateQuestion();
                 totalResult();
             }
@@ -131,11 +130,13 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex+1) % mQuestionBank.length;
                 updateQuestion();
+                totalResult();
             }
         });
     }
     private void updateQuestion(){
         try{
+            Log.d(TAG,"Updating question text", new Exception());
             int question = mQuestionBank[mCurrentIndex].getTextResId();
             mQuestionTextView.setText(question);
             if(mUserAnswersResult[mCurrentIndex] != 0){
@@ -174,8 +175,10 @@ public class QuizActivity extends AppCompatActivity {
         boolean allSelected = false;
         totalResult = 0;
         for(int answer : mUserAnswersResult){
-            if(answer == 0)
+            if(answer == 0){
                 allSelected = false;
+                break;
+            }
             else
                 allSelected = true;
         }
