@@ -1,10 +1,13 @@
 package com.example.farvater.geoquiz;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,11 +19,13 @@ public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivityT";
     private static final String KEY_INDEX = "index";
     private static final String KEY_USER_ANSWERS_RESULT = "user results";
+    private static final String EXTRA_ANSWER_IS_TRUE = "com.example.farvater.geoquiz.answer_is_true";
     private int totalResult = 0;
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
     private Button mPrevButton;
+    private ImageButton mCheatButton;
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[]{
@@ -79,13 +84,13 @@ public class QuizActivity extends AppCompatActivity {
             mUserAnswersResult = savedInstanceState.getIntArray(KEY_USER_ANSWERS_RESULT);
         }
 
-
         setContentView(R.layout.activity_quiz);
 
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
         mNextButton = (Button) findViewById(R.id.next_button);
         mPrevButton = (Button) findViewById(R.id.prev_button);
+        mCheatButton = (ImageButton) findViewById(R.id.cheat_button);
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
 
@@ -115,6 +120,15 @@ public class QuizActivity extends AppCompatActivity {
                 totalResult();
             }
         });
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), R.string.judgement_toast, Toast.LENGTH_SHORT).show();
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+                Intent intent = newIntent(QuizActivity.this, answerIsTrue);
+                startActivity(intent);
+            }
+        });
         mPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,6 +148,12 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
     }
+    public static Intent newIntent(Context packageContext, boolean answerIsTrue){
+        Intent intent = new Intent(packageContext, CheatActivity.class);
+        intent.putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+        return intent;
+    }
+
     private void updateQuestion(){
         try{
             Log.d(TAG,"Updating question text", new Exception());

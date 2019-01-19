@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="bottom|right"
+        android:gravity="center"
         android:paddingBottom="30dp"
         android:paddingRight="30dp">
         <Button
@@ -42,6 +43,13 @@
             android:text="@string/prev_button"
             android:drawableLeft="@drawable/ic_arrow_left"
             android:drawablePadding="4dp"/>
+        <ImageButton
+            android:id="@+id/cheat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cheat_button"
+            android:padding="30dp"
+            android:background="@drawable/ic_cheat"/>
         <Button
             android:id="@+id/next_button"
             android:layout_width="wrap_content"
