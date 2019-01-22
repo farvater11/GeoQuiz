@@ -21,6 +21,9 @@ public class QuizActivity extends AppCompatActivity {
     private static final String KEY_USER_ANSWERS_RESULT = "user results";
     private static final String KEY_CHEAT_ANSWERS = "cheat answers";
     private static final String KEY_CHEATER = "cheater!";
+    private static final String EXTRA_RECIVED_TIPS = "com.example.farvater.geoquiz.recived_tips";
+    private static final String EXTRA_SENDED_TIPS = "com.example.farvater.geoquiz.sended_tips";
+    private static final String KEY_NUM_OF_CHEAT = "number of remaining tips";
     private static final String EXTRA_ANSWER_IS_TRUE = "com.example.farvater.geoquiz.answer_is_true";
     private static final int REQUEST_CODE_CHEAT = 0;
     private float totalResult = 0;
@@ -43,12 +46,15 @@ public class QuizActivity extends AppCompatActivity {
     private int[] mUserAnswersResult = new int[mQuestionBank.length];
     private boolean[] mCheatingAnswers = new boolean[mQuestionBank.length];
     private int mCurrentIndex = 0;
+    private int mNumOfCheats = 3;
+    private int mNumOfCheatsMax = 3;
     private boolean mIsCheater;
 
     @Override
     public void onResume(){
         super.onResume();
         Log.d(TAG, "onResume() called");
+        Toast.makeText(this, String.valueOf(mNumOfCheats), Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onPause(){
@@ -78,6 +84,7 @@ public class QuizActivity extends AppCompatActivity {
         savedInstanceState.putIntArray(KEY_USER_ANSWERS_RESULT , mUserAnswersResult);
         savedInstanceState.putBooleanArray(KEY_CHEAT_ANSWERS, mCheatingAnswers);
         savedInstanceState.putBoolean(KEY_CHEATER, mIsCheater);
+        savedInstanceState.putInt(KEY_NUM_OF_CHEAT, mNumOfCheats);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -88,6 +95,7 @@ public class QuizActivity extends AppCompatActivity {
             if(data == null)
                 return;
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            mNumOfCheats = CheatActivity.wasAnswerShownTips(data);
             mCheatingAnswers[mCurrentIndex] = mIsCheater;
         }
     }
@@ -107,6 +115,7 @@ public class QuizActivity extends AppCompatActivity {
             mUserAnswersResult = savedInstanceState.getIntArray(KEY_USER_ANSWERS_RESULT);
             mCheatingAnswers = savedInstanceState.getBooleanArray(KEY_CHEAT_ANSWERS);
             mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER, false);
+            mNumOfCheats = savedInstanceState.getInt(KEY_NUM_OF_CHEAT, mNumOfCheatsMax);
         }
 
         setContentView(R.layout.activity_quiz);
@@ -150,7 +159,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Toast.makeText(getApplicationContext(), R.string.judgement_toast, Toast.LENGTH_SHORT).show();
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-                Intent intent = newIntent(QuizActivity.this, answerIsTrue);
+                Intent intent = newIntent(QuizActivity.this, answerIsTrue, mNumOfCheats);
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
         });
@@ -175,9 +184,10 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    public static Intent newIntent(Context packageContext, boolean answerIsTrue){
+    public static Intent newIntent(Context packageContext, boolean answerIsTrue, int numOfCheats){
         Intent intent = new Intent(packageContext, CheatActivity.class);
         intent.putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+        intent.putExtra(EXTRA_RECIVED_TIPS, numOfCheats);
         return intent;
     }
     private void updateQuestion(){

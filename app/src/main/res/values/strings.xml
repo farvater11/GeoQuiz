@@ -13,6 +13,9 @@
     <string name="cheat_button">Cheat!</string>
     <string name="judgement_toast">Cheating is wrong</string>
 
+    <string name="API_version">API Level </string>
+    <string name="warning_tips">Number tips exhausted</string>
+
     <string name="question_australia">Canberra is the capital of Australia</string>
     <string name="question_oceans">The Pacific Ocean is larger the Atlantic Ocean</string>
     <string name="question_mideast">The Suez Canal connects the Read Sea and the Indian Ocean</string>

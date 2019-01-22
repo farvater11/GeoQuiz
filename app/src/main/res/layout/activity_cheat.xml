@@ -26,4 +26,12 @@
         android:padding="24dp"
         android:text="@string/show_answer_button"/>
 
+    <TextView
+        android:id="@+id/target_api_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:gravity="center"
+        tools:text="API"/>
+
 </LinearLayout>
