@@ -1,1 +1,2 @@
 Test. File was created in gitHub in branch dev
+Second test. File was edited in GitHub in branch dev in second time 
